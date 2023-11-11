@@ -12,6 +12,11 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+
+  --muses-animation-bg-color: #111;
+  --muses-animation-color: #ddd;
+
 }
 
 a {
