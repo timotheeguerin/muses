@@ -13,12 +13,16 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-
   --muses-animation-bg-color: #111;
+  --muses-animation-bg-selected: #444;
   --muses-animation-color: #ddd;
-
+  --muses-animation-line-height: 24px;
+  --muses-animation-font-family: "Space Mono", "Source Code Pro", "Monaco", "Consolas", monospace;
 }
 
+#root {
+  margin: auto;
+}
 a {
   font-weight: 500;
   color: #646cff;

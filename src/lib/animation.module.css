@@ -1,0 +1,30 @@
+.animation-container {
+  background-color: var(--muses-animation-bg-color);
+  color: var(--muses-animation-color);
+}
+
+.line {
+  height: var(--muses-animation-line-height);
+  line-height: var(--muses-animation-line-height);
+  font-family: var(--muses-font-family);
+}
+
+.autocomplete-box-container {
+  display: inline;
+  position: relative;
+}
+
+.autocomplete-box {
+  position: absolute;
+  top: var(--muses-animation-line-height);
+  left: 0;
+  border: 1px solid var(--muses-animation-color);
+}
+
+.autocomplete-item {
+  padding: 2px;
+}
+
+.autocomplete-item-selected {
+  background-color: var(--muses-animation-bg-selected);
+}
