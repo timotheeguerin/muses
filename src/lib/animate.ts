@@ -1,3 +1,4 @@
+import { Token, languages, tokenize } from "prismjs";
 import style from "./animation.module.css";
 import { AnimationTypeText, AnimationTypeWithAutocomplete, CompletionItem, MusesAnimation } from "./types";
 
@@ -6,12 +7,19 @@ export function animate(container: Element, animation: MusesAnimation) {
 }
 
 async function runAnimation(container: Element, animation: MusesAnimation) {
+  const defaultDelay = 100;
   container.setAttribute("style", `height: ${animation.config.height}px; width: ${animation.config.width}px;`);
   container.classList.add(style["animation-container"]);
 
-  const currentLine = document.createElement("div");
-  currentLine.classList.add(style["animation-line"]);
-  container.appendChild(currentLine);
+  const cursorEl = document.createElement("div");
+  cursorEl.classList.add(style["cursor"]);
+  container.appendChild(cursorEl);
+
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add(style["content"]);
+  container.appendChild(contentContainer);
+
+  let currentText = "";
 
   for (const segment of animation.segments) {
     switch (segment.kind) {
@@ -25,48 +33,88 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
     }
   }
 
+  function addChar(char: string) {
+    currentText += char;
+    updateCursorPos();
+    highlight();
+  }
   async function type(segment: AnimationTypeText) {
     for (const char of segment.text) {
-      currentLine.innerHTML = `${currentLine.innerHTML}${char}`;
-      await delay(100);
+      // currentLine.innerHTML = `${currentLine.innerHTML}${char}`;
+      addChar(char);
+      await delay(defaultDelay);
     }
   }
   async function typeWithAutocomplete(segment: AnimationTypeWithAutocomplete) {
-    const textSpan = document.createElement("span");
-    currentLine.appendChild(textSpan);
     const autocompleteBoxContainer = document.createElement("div");
-    currentLine.appendChild(autocompleteBoxContainer);
+    cursorEl.appendChild(autocompleteBoxContainer);
 
     autocompleteBoxContainer.classList.add(style["autocomplete-box-container"]);
-    let currentText = "";
+    let currentAutocompleteText = "";
 
-    autocompleteBoxContainer.appendChild(buildAutoCompleteBoxWithCurrentText(segment.completions, currentText));
-    await delay(100);
+    autocompleteBoxContainer.appendChild(
+      buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText),
+    );
+    await delay(defaultDelay);
 
     for (const char of segment.text) {
-      currentText += char;
-      textSpan.innerHTML = currentText;
+      currentAutocompleteText += char;
+      addChar(char);
       if (autocompleteBoxContainer.lastChild) {
         autocompleteBoxContainer.removeChild(autocompleteBoxContainer.lastChild);
       }
-      autocompleteBoxContainer.appendChild(buildAutoCompleteBoxWithCurrentText(segment.completions, currentText));
-      await delay(100);
+      autocompleteBoxContainer.appendChild(
+        buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText),
+      );
+      await delay(defaultDelay);
     }
 
     if (segment.selectAfter) {
-      const remaining = segment.completions.filter((completion) => completion.includes(currentText));
+      const remaining = segment.completions.filter((completion) => completion.includes(currentAutocompleteText));
       for (let i = 0; i < remaining.indexOf(segment.selectAfter); i++) {
         if (autocompleteBoxContainer.lastChild) {
           autocompleteBoxContainer.removeChild(autocompleteBoxContainer.lastChild);
         }
         autocompleteBoxContainer.appendChild(
-          buildAutoCompleteBoxWithCurrentText(segment.completions, currentText, remaining[i]),
+          buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText, remaining[i]),
         );
-        await delay(100);
+        await delay(defaultDelay);
       }
-      textSpan.innerHTML = segment.selectAfter;
+      currentText = currentText.slice(0, currentText.length - currentAutocompleteText.length) + segment.selectAfter;
+      highlight();
+      updateCursorPos();
     }
-    currentLine.removeChild(autocompleteBoxContainer);
+    cursorEl.removeChild(autocompleteBoxContainer);
+  }
+
+  function highlight() {
+    const tokens = tokenize(currentText, languages.javascript);
+
+    const line = document.createElement("div");
+    line.classList.add(style["line"]);
+    const els = tokens.map((x) => tokenToEl(x));
+    for (const el of els) {
+      line.appendChild(el);
+    }
+
+    contentContainer.lastChild?.remove();
+    contentContainer.appendChild(line);
+  }
+
+  function updateCursorPos() {
+    const left = currentText.length * 7.225;
+    cursorEl.style.left = `${left}px`;
+  }
+
+  function tokenToEl(token: string | Token) {
+    const el = document.createElement("span");
+    if (typeof token === "string") {
+      el.textContent = token;
+    } else {
+      el.textContent = token.content as string; // todo need to flatten this
+      el.classList.add(style[`muses-tok-${token.type}`]);
+    }
+    return el;
   }
 }
 

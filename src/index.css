@@ -13,11 +13,14 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --muses-animation-bg-color: #111;
-  --muses-animation-bg-selected: #444;
-  --muses-animation-color: #ddd;
-  --muses-animation-line-height: 24px;
-  --muses-animation-font-family: "Space Mono", "Source Code Pro", "Monaco", "Consolas", monospace;
+  --muses-bg-color: #111;
+  --muses-bg-selected: #444;
+  --muses-color: #ddd;
+  --muses-line-height: 18px;
+  --muses-font-family: Menlo, Monaco, "Courier New", monospace;
+  --muses-color-keyword: rgb(148, 91, 150);
+  --muses-color-string: rgb(6, 56, 29);
+  --muses-cursor-color: rgb(30, 197, 227);
 }
 
 #root {

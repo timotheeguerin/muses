@@ -1,12 +1,21 @@
 .animation-container {
-  background-color: var(--muses-animation-bg-color);
-  color: var(--muses-animation-color);
+  position: relative;
+  background-color: var(--muses-bg-color);
+  color: var(--muses-color);
+  font-family: var(--muses-font-family);
 }
 
+.cursor {
+  position: absolute;
+  display: block;
+  width: 2px;
+  height: var(--muses-line-height);
+  background-color: var(--muses-cursor-color);
+}
 .line {
-  height: var(--muses-animation-line-height);
-  line-height: var(--muses-animation-line-height);
-  font-family: var(--muses-font-family);
+  font-size: 12px;
+  height: var(--muses-line-height);
+  line-height: var(--muses-line-height);
 }
 
 .autocomplete-box-container {
@@ -16,9 +25,9 @@
 
 .autocomplete-box {
   position: absolute;
-  top: var(--muses-animation-line-height);
+  top: var(--muses-line-height);
   left: 0;
-  border: 1px solid var(--muses-animation-color);
+  border: 1px solid var(--muses-color);
 }
 
 .autocomplete-item {
@@ -26,5 +35,12 @@
 }
 
 .autocomplete-item-selected {
-  background-color: var(--muses-animation-bg-selected);
+  background-color: var(--muses-bg-selected);
+}
+
+.muses-tok-keyword {
+  color: var(--muses-color-keyword);
+}
+.muses-tok-string {
+  color: var(--muses-color-string);
 }
