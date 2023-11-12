@@ -7,7 +7,7 @@ export function animate(container: Element, animation: MusesAnimation) {
 }
 
 async function runAnimation(container: Element, animation: MusesAnimation) {
-  const defaultDelay = 100;
+  const defaultDelay = 150;
   container.setAttribute("style", `height: ${animation.config.height}px; width: ${animation.config.width}px;`);
   container.classList.add(style["animation-container"]);
 
@@ -40,7 +40,6 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
   }
   async function type(segment: AnimationTypeText) {
     for (const char of segment.text) {
-      // currentLine.innerHTML = `${currentLine.innerHTML}${char}`;
       addChar(char);
       await delay(defaultDelay);
     }

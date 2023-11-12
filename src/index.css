@@ -13,13 +13,15 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --muses-bg-color: #111;
+  /* https://github.com/akamud/vscode-theme-onedark/blob/master/themes/OneDark.old.tmTheme */
+  --muses-bg-color: #282c34;
   --muses-bg-selected: #444;
   --muses-color: #ddd;
   --muses-line-height: 18px;
   --muses-font-family: Menlo, Monaco, "Courier New", monospace;
-  --muses-color-keyword: rgb(148, 91, 150);
-  --muses-color-string: rgb(6, 56, 29);
+  --muses-color-keyword: #c678dd;
+  --muses-color-string: #98c379;
+  --muses-color-comment: #5c6370;
   --muses-cursor-color: rgb(30, 197, 227);
 }
 

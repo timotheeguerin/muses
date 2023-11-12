@@ -3,6 +3,8 @@
   background-color: var(--muses-bg-color);
   color: var(--muses-color);
   font-family: var(--muses-font-family);
+  font-size: 12px;
+  line-height: var(--muses-line-height);
 }
 
 .cursor {
@@ -13,7 +15,6 @@
   background-color: var(--muses-cursor-color);
 }
 .line {
-  font-size: 12px;
   height: var(--muses-line-height);
   line-height: var(--muses-line-height);
 }
