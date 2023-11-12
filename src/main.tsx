@@ -23,6 +23,14 @@ const animation = createAnimation({
     completions: ["readFile", "read", "writeFile", "write"],
     selectAfter: "readFile",
   })
-  .type(`("foo.json");`);
+  .type(`("foo.json");\n`)
+  .type("const parsed = JSON.parse(")
+  .typeWithError("contnt", { error: { message: "Cannot find name 'contnt'." } })
+  .type(");")
+  .moveCursor({ left: 4 })
+  .type("e")
+  .moveCursor({ right: 4 })
+  .clearErrors()
+  .type(`\n\nconsole.log("Version is: ", parsed.version);`);
 
 animate(document.getElementById("root")!, animation.build());

@@ -1,4 +1,9 @@
-export type AnimationSeg = AnimationTypeText | AnimationTypeWithAutocomplete;
+export type AnimationSeg =
+  | AnimationTypeText
+  | AnimationTypeWithAutocomplete
+  | AnimationTypeWithError
+  | AnimationMoveCursor
+  | AnimationClearErrors;
 
 export type AnimationTypeText = {
   readonly kind: "type-text";
@@ -12,6 +17,26 @@ export type AnimationTypeWithAutocomplete = {
   readonly text: string;
   readonly completions: readonly CompletionItem[];
   readonly selectAfter?: string;
+};
+
+export type AnimationTypeWithError = {
+  readonly kind: "type-error";
+  readonly text: string;
+  readonly error: Error;
+};
+
+export type AnimationMoveCursor = {
+  readonly kind: "move-cursor";
+  readonly left?: number;
+  readonly right?: number;
+};
+
+export type AnimationClearErrors = {
+  readonly kind: "clear-errors";
+};
+
+export type Error = {
+  readonly message: string;
 };
 
 export interface MusesAnimation {
