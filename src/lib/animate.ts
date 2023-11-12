@@ -1,13 +1,19 @@
-import { Token, languages, tokenize } from "prismjs";
+import { languages, tokenize } from "prismjs";
 import style from "./animation.module.css";
-import { AnimationTypeText, AnimationTypeWithAutocomplete, CompletionItem, MusesAnimation } from "./types";
+import { AnimationTypeText, AnimationTypeWithAutocomplete, CompletionItem, MusesAnimation, Token } from "./types";
+import { normalizeTokens } from "./normalize-tokens";
 
 export function animate(container: Element, animation: MusesAnimation) {
   runAnimation(container, animation);
 }
 
+const delays = {
+  typeText: 100,
+  afterBlank: 200,
+  selectAutocomplete: 200,
+};
+
 async function runAnimation(container: Element, animation: MusesAnimation) {
-  const defaultDelay = 150;
   container.setAttribute("style", `height: ${animation.config.height}px; width: ${animation.config.width}px;`);
   container.classList.add(style["animation-container"]);
 
@@ -41,7 +47,8 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
   async function type(segment: AnimationTypeText) {
     for (const char of segment.text) {
       addChar(char);
-      await delay(defaultDelay);
+      const delayMs = char === "\n" || char === " " ? delays.afterBlank : delays.typeText;
+      await delay(delayMs);
     }
   }
   async function typeWithAutocomplete(segment: AnimationTypeWithAutocomplete) {
@@ -54,7 +61,7 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
     autocompleteBoxContainer.appendChild(
       buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText),
     );
-    await delay(defaultDelay);
+    await delay(delays.typeText);
 
     for (const char of segment.text) {
       currentAutocompleteText += char;
@@ -65,19 +72,19 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
       autocompleteBoxContainer.appendChild(
         buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText),
       );
-      await delay(defaultDelay);
+      await delay(delays.typeText);
     }
 
     if (segment.selectAfter) {
       const remaining = segment.completions.filter((completion) => completion.includes(currentAutocompleteText));
-      for (let i = 0; i < remaining.indexOf(segment.selectAfter); i++) {
+      for (let i = 0; i <= remaining.indexOf(segment.selectAfter); i++) {
         if (autocompleteBoxContainer.lastChild) {
           autocompleteBoxContainer.removeChild(autocompleteBoxContainer.lastChild);
         }
         autocompleteBoxContainer.appendChild(
           buildAutoCompleteBoxWithCurrentText(segment.completions, currentAutocompleteText, remaining[i]),
         );
-        await delay(defaultDelay);
+        await delay(delays.selectAutocomplete);
       }
       currentText = currentText.slice(0, currentText.length - currentAutocompleteText.length) + segment.selectAfter;
       highlight();
@@ -87,22 +94,37 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
   }
 
   function highlight() {
-    const tokens = tokenize(currentText, languages.javascript);
-
-    const line = document.createElement("div");
-    line.classList.add(style["line"]);
-    const els = tokens.map((x) => tokenToEl(x));
-    for (const el of els) {
-      line.appendChild(el);
+    const prismTokens = tokenize(currentText, languages.javascript);
+    const tokens = normalizeTokens(prismTokens);
+    const lines = document.createElement("div");
+    for (const lineTokens of tokens) {
+      const line = document.createElement("div");
+      line.classList.add(style["line"]);
+      const els = lineTokens.flatMap(tokenToEl);
+      for (const el of els) {
+        line.appendChild(el);
+      }
+      lines.appendChild(line);
     }
 
     contentContainer.lastChild?.remove();
-    contentContainer.appendChild(line);
+    contentContainer.appendChild(lines);
   }
 
   function updateCursorPos() {
-    const left = currentText.length * 7.225;
+    let count = 0;
+    let lastLineCol = 0;
+    for (let i = 0; i < currentText.length; i++) {
+      lastLineCol++;
+      if (currentText[i] === "\n") {
+        count++;
+        lastLineCol = 0;
+      }
+    }
+    const left = lastLineCol * 7.225;
+    const top = count * 18;
     cursorEl.style.left = `${left}px`;
+    cursorEl.style.top = `${top}px`;
   }
 
   function tokenToEl(token: string | Token) {
@@ -111,7 +133,9 @@ async function runAnimation(container: Element, animation: MusesAnimation) {
       el.textContent = token;
     } else {
       el.textContent = token.content as string; // todo need to flatten this
-      el.classList.add(style[`muses-tok-${token.type}`]);
+      for (const type of token.types) {
+        el.classList.add(style[`muses-tok-${type}`]);
+      }
     }
     return el;
   }

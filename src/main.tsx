@@ -12,11 +12,17 @@ const animation = createAnimation({
   height: 300,
   width: 600,
 })
-  .type(`import foo from "`)
+  .type(`import fs from "`)
   .typeWithAutoComplete("fs/", {
     completions: ["assert", "fs", "fs/promises", "node:fs", "node:fs/promises", "path", "url"],
     selectAfter: "node:fs/promises",
   })
-  .type(`";`);
+  .type(`";\n\n`)
+  .type(`const content = await fs.`)
+  .typeWithAutoComplete(`read`, {
+    completions: ["readFile", "read", "writeFile", "write"],
+    selectAfter: "readFile",
+  })
+  .type(`("foo.json");`);
 
 animate(document.getElementById("root")!, animation.build());
