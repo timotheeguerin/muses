@@ -12,8 +12,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* https://github.com/akamud/vscode-theme-onedark/blob/master/themes/OneDark.old.tmTheme */
+  --muses-bg-color: #282c34;
+  --muses-bg-selected: #444;
+  --muses-color: #ddd;
+  --muses-line-height: 18px;
+  --muses-font-family: Menlo, Monaco, "Courier New", monospace;
+  --muses-color-keyword: #c678dd;
+  --muses-color-string: #98c379;
+  --muses-color-comment: #5c6370;
+  --muses-cursor-color: rgb(30, 197, 227);
 }
 
+#root {
+  margin: auto;
+}
 a {
   font-weight: 500;
   color: #646cff;
