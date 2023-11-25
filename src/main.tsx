@@ -1,13 +1,9 @@
-// import React from 'react'
-// import ReactDOM from 'react-dom/client'
-// import App from './App.tsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
 import "./index.css";
-import { animate, createAnimation } from "./lib";
-// ReactDOM.createRoot(document.getElementById('root')!).render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-// )
+import { createAnimation } from "./lib";
+import { AnimatedEditor } from "./react/editor/animated-editor";
+
 const animation = createAnimation({
   height: 300,
   width: 600,
@@ -33,4 +29,8 @@ const animation = createAnimation({
   .clearErrors()
   .type(`\n\nconsole.log("Version is: ", parsed.version);`);
 
-animate(document.getElementById("root")!, animation.build());
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <AnimatedEditor animation={animation.build()} language="javascript" />
+  </React.StrictMode>,
+);
