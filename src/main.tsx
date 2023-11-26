@@ -21,6 +21,7 @@ const animation = createAnimation({
   })
   .type(`("foo.json");\n`)
   .type("const parsed = JSON.parse(")
+  // cspell:disable-next-line
   .typeWithError("contnt", { error: { message: "Cannot find name 'contnt'." } })
   .type(");")
   .moveCursor({ left: 4 })
