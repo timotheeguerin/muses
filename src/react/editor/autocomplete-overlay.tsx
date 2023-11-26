@@ -28,7 +28,7 @@ const AutoCompleteBox = ({ items, filterText, selected }: AutoCompleteBoxProps) 
     <div className={style["autocomplete-box"]}>
       {items
         .filter((x) => x.includes(filterText))
-        .map((x, i) => (
+        .map((x) => (
           <AutoCompleteItem key={x} item={x} selected={x === selected} />
         ))}
     </div>
