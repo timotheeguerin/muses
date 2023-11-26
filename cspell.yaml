@@ -1,2 +1,7 @@
 words:
+  - clsx
   - prismjs
+
+ignorePaths:
+  - "node_modules/**"
+  - "dist/**"
